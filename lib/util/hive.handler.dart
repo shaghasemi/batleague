@@ -7,7 +7,7 @@ String backupPath = '/storage/emulated/0/download/';
 hiveInit() async {
   await Hive.initFlutter();
   hiveRegister();
-  hiveOpen();
+  await hiveOpen();
 }
 
 hiveRegister() {
@@ -15,8 +15,7 @@ hiveRegister() {
 }
 
 hiveOpen() async {
-  boxPersonnel =
-      await Hive.openBox<PersonnelModel>('personnel');
+  boxPersonnel = await Hive.openBox<PersonnelModel>('personnel');
 }
 
 hiveClose() {

@@ -13,7 +13,7 @@ late Box boxPersonnel;
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  hiveInit();
+  await hiveInit();
   SystemChrome.setSystemUIOverlayStyle(
     SystemUiOverlayStyle(statusBarColor: primaryColor),
   );

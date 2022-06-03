@@ -1,3 +1,5 @@
+import '../../data/local/model/rating.model.dart';
+import '../../util/rating.dart';
 import '../../widget/button.material.main.dart';
 import '../../widget/text_form_field.dart';
 import '../../main.dart';
@@ -27,14 +29,6 @@ class _PersonnelScreenState extends State<PersonnelScreen> {
   final TextEditingController _tecSurname = TextEditingController();
   final TextEditingController _tecPosition = TextEditingController();
   final GlobalKey<FormState> _keyValidation = GlobalKey<FormState>();
-
-  List<RatingType> ratingItems = [
-    RatingType(1, 'Batman', 'batman'),
-    RatingType(2, 'Superman', 'superman'),
-    RatingType(3, 'Hulk', 'hulk'),
-    RatingType(4, 'Robin', 'robin'),
-  ];
-  var _ratingItem;
 
   @override
   void initState() {
@@ -104,41 +98,78 @@ class _PersonnelScreenState extends State<PersonnelScreen> {
         if (personnel.isNotEmpty)
           ListView.builder(
             shrinkWrap: true,
-            itemCount: boxPersonnel.length,
+            itemCount: personnel.length,
             itemBuilder: (context, index) {
-              return Row(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(personnel[index].name),
-                  SizedBox(
-                    height: 100,width: 200,
-                    child: DropdownButtonFormField<RatingType>(
-                      elevation: 2,
-                      alignment: Alignment.center,
-                      decoration: const InputDecoration(
-                        border: InputBorder.none,
-                        alignLabelWithHint: true,
-                      ),
-                      value: _ratingItem,
-                      hint: const Text('Select rating for colleague'),
-                      items: List.generate(
-                        ratingItems.length,
-                        (index) => DropdownMenuItem(
-                          value: ratingItems[index],
-                          child: Text(
-                            ratingItems[index].title,
+              var _ratingCalc;
+              if (person.ratings != null) {
+                if (person.ratings!.any(
+                  (element) => element!.mobile == personnel[index].cellphone,
+                )) {
+                  _ratingCalc = ratingItems.firstWhere(
+                    (e) =>
+                        e.title ==
+                        person.ratings!
+                            .firstWhere((element) =>
+                                element!.mobile == personnel[index].cellphone)!
+                            .title,
+                  );
+                }
+              }
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Row(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(personnel[index].name),
+                    SizedBox(
+                      // height: 100,
+                      width: 120,
+                      child: DropdownButtonFormField<RatingType>(
+                        elevation: 2,
+                        isDense: true,
+                        alignment: Alignment.center,
+                        decoration: const InputDecoration(
+                          border: InputBorder.none,
+                          alignLabelWithHint: true,
+                        ),
+                        // value: _ratingItem,
+                        value: _ratingCalc,
+                        hint: const Text('Select Rating'),
+                        items: List.generate(
+                          ratingItems.length,
+                          (index) => DropdownMenuItem(
+                            value: ratingItems[index],
+                            child: Text(
+                              ratingItems[index].title,
+                            ),
                           ),
                         ),
+                        onChanged: (item) {
+                          setState(() {
+                            // _ratingItem = item!;
+                            _ratingCalc = item!;
+                            if (person.ratings!.any(
+                              (e) => e!.mobile == personnel[index].cellphone,
+                            )) {
+                              person.ratings!
+                                  .firstWhere(
+                                    (e) =>
+                                        e!.mobile == personnel[index].cellphone,
+                                  )!
+                                  .title = item.title;
+                            } else {
+                              person.ratings!.add(Rating(
+                                personnel[index].cellphone,
+                                item.title,
+                              ));
+                            }
+                          });
+                        },
                       ),
-                      onChanged: (item) {
-                        setState(() {
-                          _ratingItem = item!;
-                        });
-                      },
                     ),
-                  ),
-                ],
+                  ],
+                ),
               );
             },
           ),
@@ -184,11 +215,9 @@ class _PersonnelScreenState extends State<PersonnelScreen> {
               textFormFieldWidget('Position', _tecPosition),
               const SizedBox(height: 12),
               buttonMain(
-                title: 'Login',
+                title: 'Login / Signup',
                 action: () {
                   print(boxPersonnel.length);
-                  print(personnel
-                      .any((element) => element.cellphone == _tecCell.text));
                   print(personnel.length);
                   if (!_keyValidation.currentState!.validate()) {
                     showSnack(context, 'Fill all required information');
@@ -203,6 +232,7 @@ class _PersonnelScreenState extends State<PersonnelScreen> {
                           clearTEC();
                           isLoggedIn = true;
                         });
+                        print("Ratings: ${person.ratings!.length}");
                       } else {
                         showSnack(context, 'Please enter correct password');
                       }
@@ -218,6 +248,7 @@ class _PersonnelScreenState extends State<PersonnelScreen> {
                           cellphone: _tecCell.text,
                           position: _tecPosition.text,
                           password: _tecPass.text,
+                          ratings: [],
                         );
                         // personnel.add(person);
                         boxPersonnel.add(person);
@@ -245,12 +276,4 @@ class _PersonnelScreenState extends State<PersonnelScreen> {
     _tecSurname.clear();
     _tecPosition.clear();
   }
-}
-
-class RatingType {
-  final int id;
-  final String title;
-  final String key;
-
-  RatingType(this.id, this.title, this.key);
 }
