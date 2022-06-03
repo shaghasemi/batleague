@@ -8,31 +8,31 @@ class PersonnelModel extends HiveObject {
   @HiveField(100)
   String name;
   @HiveField(101)
-  String surname;
+  String? surname;
   @HiveField(102)
-  String email;
+  String? email;
   @HiveField(103)
   String cellphone;
   @HiveField(104)
-  List<Rating> ratings;
+  List<Rating?>? ratings;
   @HiveField(105)
-  String rank;
+  String? rank;
   @HiveField(106)
   String position;
   @HiveField(107)
-  String token;
+  String? token;
   @HiveField(108)
   String password;
 
-  PersonnelModel(
-    this.name,
+  PersonnelModel({
+    required this.name,
     this.surname,
     this.email,
-    this.cellphone,
+    required this.cellphone,
     this.ratings,
     this.rank,
-    this.position,
+    required this.position,
     this.token,
-    this.password,
-  );
+    required this.password,
+  });
 }
