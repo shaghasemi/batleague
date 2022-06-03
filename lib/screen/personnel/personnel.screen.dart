@@ -28,6 +28,14 @@ class _PersonnelScreenState extends State<PersonnelScreen> {
   final TextEditingController _tecPosition = TextEditingController();
   final GlobalKey<FormState> _keyValidation = GlobalKey<FormState>();
 
+  List<RatingType> ratingItems = [
+    RatingType(1, 'Batman', 'batman'),
+    RatingType(2, 'Superman', 'superman'),
+    RatingType(3, 'Hulk', 'hulk'),
+    RatingType(4, 'Robin', 'robin'),
+  ];
+  var _ratingItem;
+
   @override
   void initState() {
     super.initState();
@@ -103,6 +111,33 @@ class _PersonnelScreenState extends State<PersonnelScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(personnel[index].name),
+                  SizedBox(
+                    height: 100,width: 200,
+                    child: DropdownButtonFormField<RatingType>(
+                      elevation: 2,
+                      alignment: Alignment.center,
+                      decoration: const InputDecoration(
+                        border: InputBorder.none,
+                        alignLabelWithHint: true,
+                      ),
+                      value: _ratingItem,
+                      hint: const Text('Select rating for colleague'),
+                      items: List.generate(
+                        ratingItems.length,
+                        (index) => DropdownMenuItem(
+                          value: ratingItems[index],
+                          child: Text(
+                            ratingItems[index].title,
+                          ),
+                        ),
+                      ),
+                      onChanged: (item) {
+                        setState(() {
+                          _ratingItem = item!;
+                        });
+                      },
+                    ),
+                  ),
                 ],
               );
             },
@@ -210,4 +245,12 @@ class _PersonnelScreenState extends State<PersonnelScreen> {
     _tecSurname.clear();
     _tecPosition.clear();
   }
+}
+
+class RatingType {
+  final int id;
+  final String title;
+  final String key;
+
+  RatingType(this.id, this.title, this.key);
 }
