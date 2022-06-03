@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-
+import 'data/bloc/personnel/personnel_bloc.dart';
 import 'home_page.dart';
 import 'util/hive.handler.dart';
 import 'util/main/palette.dart';
@@ -16,7 +17,16 @@ Future main() async {
   SystemChrome.setSystemUIOverlayStyle(
     SystemUiOverlayStyle(statusBarColor: primaryColor),
   );
-  runApp(const MyApp());
+  runApp(
+    MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (BuildContext context) => PersonnelBloc(),
+        )
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -30,7 +40,7 @@ class MyApp extends StatelessWidget {
           builder: (context, Orientation orientation) {
             SizeConfig.init(constraints, orientation);
             return MaterialApp(
-              title: 'Plearn',
+              title: 'BatLeague',
               debugShowCheckedModeBanner: false,
               theme: themeMain,
               locale: const Locale("en", "US"),

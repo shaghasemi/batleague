@@ -1,9 +1,10 @@
 import 'package:hive_flutter/hive_flutter.dart';
+import 'rating.model.dart';
 
 part 'personnel.model.g.dart';
 
 @HiveType(typeId: 10)
-class Personnelodel extends HiveObject {
+class PersonnelModel extends HiveObject {
   @HiveField(100)
   String name;
   @HiveField(101)
@@ -13,19 +14,25 @@ class Personnelodel extends HiveObject {
   @HiveField(103)
   String cellphone;
   @HiveField(104)
-  List<String> ratings;
+  List<Rating> ratings;
   @HiveField(105)
   String rank;
   @HiveField(106)
   String position;
   @HiveField(107)
   String token;
+  @HiveField(108)
+  String password;
 
-  @HiveField(103)
-  Personnelodel(
+  PersonnelModel(
     this.name,
     this.surname,
+    this.email,
+    this.cellphone,
     this.ratings,
+    this.rank,
+    this.position,
     this.token,
+    this.password,
   );
 }

@@ -1,9 +1,21 @@
+import 'screen/manager/manager.screen.dart';
+import 'screen/personnel/personnel.screen.dart';
 import 'package:flutter/material.dart';
 import 'util/main/size_config.dart';
-import 'widget/button.material.main.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  int currentIndex = 0;
+  List<Widget> screens = [
+    const ManagerScreen(),
+    const PersonnelScreen(),
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -14,50 +26,30 @@ class HomePage extends StatelessWidget {
             SizeConfig.init(constraints, orientation);
             return SafeArea(
               child: Scaffold(
-                appBar: AppBar(actions: [
-                  IconButton(
-                    onPressed: () {},
-                    icon: const Icon(Icons.settings),
-                  )
-                ]),
+                body: screens[currentIndex],
+                bottomNavigationBar: BottomNavigationBar(
+                  currentIndex: currentIndex,
+                  onTap: (newIndex) {
+                    setState(() {
+                      currentIndex = newIndex;
+                    });
+                  },
+                  items: const [
+                    BottomNavigationBarItem(
+                      label: 'Manager',
+                      icon: Icon(Icons.sensor_occupied),
+                    ),
+                    BottomNavigationBarItem(
+                      label: 'Personnel',
+                      icon: Icon(Icons.groups),
+                    ),
+                  ],
+                ),
               ),
             );
           },
         );
       },
-    );
-  }
-
-  Widget gameItem(
-    BuildContext context,
-    String title,
-    Widget screen1,
-    Widget screen2,
-  ) {
-    return Row(
-      mainAxisSize: MainAxisSize.max,
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        buttonMain(
-          title: title,
-          action: () => screenLoader(context, () => screen1),
-        ),
-        IconButton(
-          iconSize: 32,
-          color: Colors.red,
-          onPressed: () => screenLoader(context, () => screen2),
-          icon: const Icon(Icons.dashboard_customize),
-        ),
-      ],
-    );
-  }
-
-  screenLoader(BuildContext context, Widget Function() builder) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => builder(),
-      ),
     );
   }
 }

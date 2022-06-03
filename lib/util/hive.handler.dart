@@ -1,4 +1,5 @@
 import 'package:hive_flutter/hive_flutter.dart';
+import '../data/local/model/personnel.model.dart';
 import '../main.dart';
 
 String backupPath = '/storage/emulated/0/download/';
@@ -10,12 +11,12 @@ hiveInit() async {
 }
 
 hiveRegister() {
-  Hive.registerAdapter(DragColorCardModelAdapter());
+  Hive.registerAdapter(PersonnelModelAdapter());
 }
 
 hiveOpen() async {
   boxPersonnel =
-      await Hive.openBox<DragColorCardModel>('personnel');
+      await Hive.openBox<PersonnelModel>('personnel');
 }
 
 hiveClose() {
