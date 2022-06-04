@@ -1,3 +1,5 @@
+import '../../data/bloc/personnel/personnel_bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../data/local/model/rating.model.dart';
 import '../../util/rating.dart';
 import '../../widget/button.material.main.dart';
@@ -14,7 +16,11 @@ class PersonnelScreen extends StatefulWidget {
   State<PersonnelScreen> createState() => _PersonnelScreenState();
 }
 
-class _PersonnelScreenState extends State<PersonnelScreen> {
+class _PersonnelScreenState extends State<PersonnelScreen>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
   List<PersonnelModel> personnel = [];
   PersonnelModel person = PersonnelModel(
     name: '',
@@ -22,7 +28,6 @@ class _PersonnelScreenState extends State<PersonnelScreen> {
     position: '',
     password: '',
   );
-  bool isLoggedIn = false;
   final TextEditingController _tecCell = TextEditingController();
   final TextEditingController _tecPass = TextEditingController();
   final TextEditingController _tecName = TextEditingController();
@@ -48,25 +53,26 @@ class _PersonnelScreenState extends State<PersonnelScreen> {
         actions: [
           IconButton(
             onPressed: () {
-              setState(() {
-                person = PersonnelModel(
-                  name: '',
-                  cellphone: '',
-                  position: '',
-                  password: '',
-                );
-                isLoggedIn = false;
-              });
+              context.read<PersonnelBloc>().add(LogoutEvent());
             },
             icon: const Icon(Icons.logout),
           ),
         ],
       ),
-      body: isLoggedIn ? mainView() : loginView(),
+      body:
+          BlocBuilder<PersonnelBloc, PersonnelState>(builder: (context, state) {
+        if (state is PersonnelInitial) {
+          return loginView();
+        } else if (state is PersonLoggedIn) {
+          return mainView(state.person);
+        } else {
+          return const CircularProgressIndicator();
+        }
+      }),
     );
   }
 
-  Widget mainView() {
+  Widget mainView(PersonnelModel person) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.start,
@@ -100,21 +106,7 @@ class _PersonnelScreenState extends State<PersonnelScreen> {
             shrinkWrap: true,
             itemCount: personnel.length,
             itemBuilder: (context, index) {
-              var _ratingCalc;
-              if (person.ratings != null) {
-                if (person.ratings!.any(
-                  (element) => element!.mobile == personnel[index].cellphone,
-                )) {
-                  _ratingCalc = ratingItems.firstWhere(
-                    (e) =>
-                        e.title ==
-                        person.ratings!
-                            .firstWhere((element) =>
-                                element!.mobile == personnel[index].cellphone)!
-                            .title,
-                  );
-                }
-              }
+              var _ratingItem;
               return Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Row(
@@ -134,7 +126,19 @@ class _PersonnelScreenState extends State<PersonnelScreen> {
                           alignLabelWithHint: true,
                         ),
                         // value: _ratingItem,
-                        value: _ratingCalc,
+                        value: person.ratings!.any(
+                                (e) => e!.mobile == personnel[index].cellphone)
+                            ? ratingItems.firstWhere(
+                                (e2) =>
+                                    e2.title ==
+                                    person.ratings!.firstWhere(
+                                      (e3) =>
+                                          e3!.mobile ==
+                                          personnel[index].cellphone,
+                                    )!.title,
+                              )
+                            : _ratingItem,
+                        // value: _ratingCalc[index],
                         hint: const Text('Select Rating'),
                         items: List.generate(
                           ratingItems.length,
@@ -146,25 +150,13 @@ class _PersonnelScreenState extends State<PersonnelScreen> {
                           ),
                         ),
                         onChanged: (item) {
-                          setState(() {
-                            // _ratingItem = item!;
-                            _ratingCalc = item!;
-                            if (person.ratings!.any(
-                              (e) => e!.mobile == personnel[index].cellphone,
-                            )) {
-                              person.ratings!
-                                  .firstWhere(
-                                    (e) =>
-                                        e!.mobile == personnel[index].cellphone,
-                                  )!
-                                  .title = item.title;
-                            } else {
-                              person.ratings!.add(Rating(
-                                personnel[index].cellphone,
-                                item.title,
-                              ));
-                            }
-                          });
+                          context.read<PersonnelBloc>().add(
+                                RateColleagueEvent(
+                                  item!.title,
+                                  personnel[index],
+                                  person,
+                                ),
+                              );
                         },
                       ),
                     ),
@@ -228,10 +220,8 @@ class _PersonnelScreenState extends State<PersonnelScreen> {
                         (element) => element.cellphone == _tecCell.text,
                       );
                       if (person.password == _tecPass.text) {
-                        setState(() {
-                          clearTEC();
-                          isLoggedIn = true;
-                        });
+                        context.read<PersonnelBloc>().add(LoginEvent(person));
+                        clearTEC();
                         print("Ratings: ${person.ratings!.length}");
                       } else {
                         showSnack(context, 'Please enter correct password');
@@ -250,12 +240,10 @@ class _PersonnelScreenState extends State<PersonnelScreen> {
                           password: _tecPass.text,
                           ratings: [],
                         );
-                        // personnel.add(person);
-                        boxPersonnel.add(person);
-                        setState(() {
-                          clearTEC();
-                          isLoggedIn = true;
-                        });
+                        context
+                            .read<PersonnelBloc>()
+                            .add(RegisterEvent(person));
+                        clearTEC();
                       }
                     }
                   }

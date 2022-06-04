@@ -11,6 +11,10 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  PageController pageController = PageController(
+    initialPage: 0,
+    keepPage: true,
+  );
   int currentIndex = 0;
   List<Widget> screens = [
     const ManagerScreen(),
@@ -26,10 +30,21 @@ class _HomePageState extends State<HomePage> {
             SizeConfig.init(constraints, orientation);
             return SafeArea(
               child: Scaffold(
-                body: screens[currentIndex],
+                body: PageView(
+                  allowImplicitScrolling: false,
+                  physics: const NeverScrollableScrollPhysics(),
+                  controller: pageController,
+                  children: screens,
+                ),
+                // body: screens[currentIndex],
                 bottomNavigationBar: BottomNavigationBar(
                   currentIndex: currentIndex,
                   onTap: (newIndex) {
+                    pageController.animateToPage(
+                      newIndex,
+                      duration: const Duration(milliseconds: 200),
+                      curve: Curves.easeInOut,
+                    );
                     setState(() {
                       currentIndex = newIndex;
                     });
