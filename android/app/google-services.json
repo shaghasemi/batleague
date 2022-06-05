@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "626783703142",
+    "firebase_url": "https://batleague-default-rtdb.firebaseio.com",
+    "project_id": "batleague",
+    "storage_bucket": "batleague.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:626783703142:android:823a967d5425d3c0ae5da7",
+        "android_client_info": {
+          "package_name": "com.example.batleague"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "626783703142-9pqeu1i8rio6gl3jpuoq7hujfaous43q.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDFxfpagWrA5q3xms-FTug3klrsFVwYHI0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "626783703142-9pqeu1i8rio6gl3jpuoq7hujfaous43q.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

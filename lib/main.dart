@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -17,16 +18,12 @@ Future main() async {
   SystemChrome.setSystemUIOverlayStyle(
     SystemUiOverlayStyle(statusBarColor: primaryColor),
   );
+  await Firebase.initializeApp();
   runApp(
     MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (BuildContext context) => PersonnelBloc()
-            ..add(
-              LoginEvent(
-                boxPersonnel.values.first,
-              ),
-            ),
+          create: (BuildContext context) => PersonnelBloc(),
         )
       ],
       child: const MyApp(),
