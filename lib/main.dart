@@ -21,12 +21,7 @@ Future main() async {
     MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (BuildContext context) => PersonnelBloc()
-            ..add(
-              LoginEvent(
-                boxPersonnel.values.first,
-              ),
-            ),
+          create: (BuildContext context) => PersonnelBloc(),
         )
       ],
       child: const MyApp(),
