@@ -12,6 +12,13 @@ part 'personnel_state.dart';
 class PersonnelBloc extends Bloc<PersonnelEvent, PersonnelState> {
   PersonnelBloc() : super(PersonnelInitial()) {
     on<LoginEvent>((event, emit) async {
+      emit(PersonnelInitial());
+      List<PersonnelModel> personnel =
+          boxPersonnel.values.toList() as List<PersonnelModel>;
+      if (!personnel.any((e) => e.email == event.person.email)) {
+        event.person.ratings ??= [];
+        boxPersonnel.add(event.person);
+      }
       emit(PersonLoggedIn(person: event.person));
     });
 
@@ -28,17 +35,17 @@ class PersonnelBloc extends Bloc<PersonnelEvent, PersonnelState> {
       (event, emit) async {
         emit(PersonnelInitial());
         if (event.person.ratings!.any(
-          (e) => e!.mobile == event.colleague.cellphone,
+          (e) => e!.email == event.colleague.email,
         )) {
           event.person.ratings!
               .firstWhere(
-                (e) => e!.mobile == event.colleague.cellphone,
+                (e) => e!.email == event.colleague.email,
               )!
               .title = event.ratingTitle;
         } else {
           event.person.ratings!.add(
             Rating(
-              event.colleague.cellphone,
+              event.colleague.email,
               event.ratingTitle,
             ),
           );
@@ -47,11 +54,7 @@ class PersonnelBloc extends Bloc<PersonnelEvent, PersonnelState> {
           boxPersonnel.values.toList().indexOf(event.person),
           event.person,
         );
-        event.person.ratings!.forEach((element) {
-          print("Print Box 1: ${element!.title} -  ${element.mobile}");
-        });
         emit(PersonLoggedIn(person: event.person));
-        // emit(PersonLoggedIn(person: event.person));
       },
     );
   }

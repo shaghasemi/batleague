@@ -1,8 +1,10 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'data/bloc/personnel/personnel_bloc.dart';
+import 'firebase_options.dart';
 import 'home_page.dart';
 import 'util/hive.handler.dart';
 import 'util/main/palette.dart';
@@ -17,12 +19,14 @@ Future main() async {
   SystemChrome.setSystemUIOverlayStyle(
     SystemUiOverlayStyle(statusBarColor: primaryColor),
   );
+  FirebaseApp fbApp = await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  fbApp.setAutomaticDataCollectionEnabled(true);
   runApp(
     MultiBlocProvider(
       providers: [
-        BlocProvider(
-          create: (BuildContext context) => PersonnelBloc(),
-        )
+        BlocProvider(create: (BuildContext context) => PersonnelBloc())
       ],
       child: const MyApp(),
     ),

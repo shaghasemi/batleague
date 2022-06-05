@@ -27,7 +27,7 @@ class RatingAdapter extends TypeAdapter<Rating> {
     writer
       ..writeByte(2)
       ..writeByte(110)
-      ..write(obj.mobile)
+      ..write(obj.email)
       ..writeByte(111)
       ..write(obj.title);
   }

@@ -5,9 +5,9 @@ part 'rating.model.g.dart';
 @HiveType(typeId: 11)
 class Rating extends HiveObject {
   @HiveField(110)
-  String mobile;
+  String email;
   @HiveField(111)
   String title;
 
-  Rating(this.mobile, this.title);
+  Rating(this.email, this.title);
 }

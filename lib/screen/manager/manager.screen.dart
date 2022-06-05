@@ -22,12 +22,12 @@ class _ManagerScreenState extends State<ManagerScreen>
   void initState() {
     super.initState();
     initHive();
+    setState(() {});
     initSums();
   }
 
   initHive() {
     personnel = boxPersonnel.values.toList() as List<PersonnelModel>;
-    setState(() {});
   }
 
   initSums() {
@@ -38,13 +38,13 @@ class _ManagerScreenState extends State<ManagerScreen>
   }
 
   calculateRatings2() {
+    initHive();
     initSums();
     for (int i = 0; i < personnel.length; i++) {
       for (var e1 in personnel[i].ratings!) {
-        sumMatrix2[personnel.indexWhere((e2) => e2.cellphone == e1!.mobile)]
+        sumMatrix2[personnel.indexWhere((e2) => e2.email == e1!.email)]
             [ratingItems.indexWhere((e3) => e3.title == e1!.title)]++;
       }
-      // print("Print Sum 2: $i");
     }
   }
 
@@ -88,13 +88,12 @@ class _ManagerScreenState extends State<ManagerScreen>
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              personnel[index1].name,
+                              personnel[index1].email,
                               style: const TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-                            Text(personnel[index1].position),
                           ],
                         ),
                         const SizedBox(height: 8),

@@ -6,32 +6,32 @@ part 'personnel.model.g.dart';
 @HiveType(typeId: 10)
 class PersonnelModel extends HiveObject {
   @HiveField(100)
-  String name;
+  String? name;
   @HiveField(101)
   String? surname;
   @HiveField(102)
-  String? email;
+  String email;
   @HiveField(103)
-  String cellphone;
+  String? cellphone;
   @HiveField(104)
   List<Rating?>? ratings;
   @HiveField(105)
   String? rank;
   @HiveField(106)
-  String position;
+  String? position;
   @HiveField(107)
   String? token;
   @HiveField(108)
   String password;
 
   PersonnelModel({
-    required this.name,
+    this.name,
     this.surname,
-    this.email,
-    required this.cellphone,
+    required this.email,
+    this.cellphone,
     this.ratings,
     this.rank,
-    required this.position,
+    this.position,
     this.token,
     required this.password,
   });

@@ -17,13 +17,13 @@ class PersonnelModelAdapter extends TypeAdapter<PersonnelModel> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return PersonnelModel(
-      name: fields[100] as String,
+      name: fields[100] as String?,
       surname: fields[101] as String?,
-      email: fields[102] as String?,
-      cellphone: fields[103] as String,
+      email: fields[102] as String,
+      cellphone: fields[103] as String?,
       ratings: (fields[104] as List?)?.cast<Rating?>(),
       rank: fields[105] as String?,
-      position: fields[106] as String,
+      position: fields[106] as String?,
       token: fields[107] as String?,
       password: fields[108] as String,
     );
